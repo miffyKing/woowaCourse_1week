@@ -9,10 +9,8 @@ public class Problem6 {
 
   public static List<String> solution(List<List<String>> forms) {
     List<String> answer = List.of("answer");
-
     ////////////////
     HashSet<String> realAnswer = new HashSet<String>();
-
     HashSet<String> parsedTotalSetDown = new HashSet<String>(); //모든 부분문자열을 넣을, 아래방향으로 진행시킬 set
     HashSet<String> parsedTotalSetUp = new HashSet<String>(); //모든 부분문자열을 넣을, 위으로 진행시킬 set
     List<HashSet<String>> parseEachName = new ArrayList<HashSet<String>>(); // 별명별 부분문자열 set을 저장하는 배열
@@ -48,7 +46,6 @@ public class Problem6 {
       }
     }
     answer = new ArrayList<>(realAnswer);
-
     ////////////////
     return answer;
   }
@@ -64,5 +61,4 @@ public class Problem6 {
     }
     return subStrings;
   }
-
 }

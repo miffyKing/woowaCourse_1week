@@ -1,34 +1,68 @@
 package onboarding;
 
-public class Problem4 {
+class Word {
+  private String word;
+  private static final int minLimit= 1;
+  private static final int maxLimit= 1000;
+  Word (String word) {
+    lengthValidityCheck(word);
+    this.word = word;
+  }
+  private void lengthValidityCheck(String word) {
+    if (word.length() < minLimit || word.length() > maxLimit) {
+      throw new IllegalArgumentException("암호문의 길이가 조건을 넘어섰습니다.");
+    }
+  }
+  String getAnswer() {
+    Classifier classifier = new Classifier(word);
+    return classifier.getChangedString();
+  }
+}
 
-  public static String solution(String word) {
-    String answer = "";
+class Classifier {
+
+  private StringBuffer answer;
+  private final int upperSum = 'A'+'Z';
+  private final int lowerSum = 'a'+'z';
+//  private static final int upperCase; 0;
+//  private static final int lowerCase; 1;
+  private String classifier;
+  Classifier (String word) {
+    this.classifier = word;
+  }
+  String getChangedString() {
     StringBuilder sb = new StringBuilder();
     char chunk;
-    for (int i = 0; i < word.length(); i++) {
-      if (word.charAt(i) >= 'a' && word.charAt(i) <= 'z') {
-        chunk = lowercaseChange(word.charAt(i));
-        sb.append(chunk);
-        continue;
-      } else if (word.charAt(i) >= 'A' && word.charAt(i) <= 'Z') {
-        chunk = uppercaseChange(word.charAt(i));
-        sb.append(chunk);
-        continue;
-      }
-      sb.append(word.charAt(i));
+    for (int i = 0; i < classifier.length(); i++) {
+      int classifyId = checkUpperLowerElse(classifier.charAt(i));
+      sb.append(changeChunk(classifyId,classifier.charAt(i) ));
     }
-    answer = sb.toString();
-    return answer;
+    return sb.toString();
   }
-
-  public static char lowercaseChange(char chunk) {
-    int lowerSum = 'a' + 'z';
-    return (char) (lowerSum - chunk);
+  int checkUpperLowerElse(char chunk) {
+    if (chunk >= 'a' && chunk <= 'z') {
+      return 0;
+    }
+    if (chunk >= 'A' && chunk <= 'Z') {
+      return 1;
+    }
+    return 2;
   }
+  char changeChunk(int Id, char chunk) {
+    if (Id == 0) {
+      return (char)(lowerSum - chunk);
+    }
+    if (Id == 1) {
+      return (char)(upperSum - chunk);
+    }
+    return chunk;
+  }
+}
 
-  public static char uppercaseChange(char chunk) {
-    int upperSum = 'A' + 'Z';
-    return (char) (upperSum - chunk);
+public class Problem4 {
+  public static String solution(String word) {
+
+    Word word2 = new Word(word);
+    return (word2.getAnswer());
   }
 }

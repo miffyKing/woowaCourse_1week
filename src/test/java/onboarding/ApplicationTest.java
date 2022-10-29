@@ -53,6 +53,13 @@ class ApplicationTest {
       String result = "";
       assertThat(Problem2.solution(cryptogram)).isEqualTo(result);
     }
+
+    @Test
+    void case3() {
+      String cryptogram = "abc QWe";
+      String result = "";
+      assertThat(Problem2.solution(cryptogram)).isEqualTo(result);
+    }
   }
 
   @Nested
@@ -64,11 +71,29 @@ class ApplicationTest {
       int result = 4;
       assertThat(Problem3.solution(number)).isEqualTo(result);
     }
-
     @Test
     void case2() {
       int number = 33;
       int result = 14;
+      assertThat(Problem3.solution(number)).isEqualTo(result);
+    }
+    @Test
+    void case3() {
+      int number = 9999;
+      int result = 12000;
+      assertThat(Problem3.solution(number)).isEqualTo(result);
+    }
+    @Test
+    void case4() {
+      int number = 1;
+      int result = 0;
+      assertThat(Problem3.solution(number)).isEqualTo(result);
+    }
+
+    @Test
+    void case5() {
+      int number = 0;
+      int result = 0;
       assertThat(Problem3.solution(number)).isEqualTo(result);
     }
   }
@@ -78,8 +103,8 @@ class ApplicationTest {
 
     @Test
     void case1() {
-      String word = "I love%you";
-      String result = "R olev%blf";
+      String word = "I love you";
+      String result = "R olev blf";
       assertThat(Problem4.solution(word)).isEqualTo(result);
     }
   }
