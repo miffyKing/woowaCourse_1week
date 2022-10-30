@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 class Friend {
 
@@ -37,6 +38,41 @@ class Friend {
   }
   List<String> getAnswer() {
     ScoreCalculator sc = new ScoreCalculator(user,visitors, relationTable, scoreTable);
+    if (!relationTable.containsKey(user)) {
+      List<String> ExceptionCase = new ArrayList<>();
+      HashMap<String, Integer> exceptionTable = new HashMap<>();
+      for (int i = 0; i < visitors.size(); i++) {
+        if (!exceptionTable.containsKey(visitors.get(i))) {
+          exceptionTable.put(visitors.get(i), 1);
+        }
+        if (exceptionTable.containsKey(visitors.get(i))) {
+          int score = exceptionTable.get(visitors.get(i));
+          exceptionTable.put(visitors.get(i), score+1);
+        }
+      }
+      System.out.println(exceptionTable);
+      exceptionTable.remove(user);
+      List<Entry<String, Integer>> list_entries = new ArrayList<Entry<String, Integer>>(
+          exceptionTable.entrySet());
+      Collections.sort(list_entries, new Comparator<Entry<String, Integer>>() {
+        // compare로 값을 비교
+        public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
+          // 내림 차순 정렬
+          int res = obj2.getValue() - obj1.getValue();
+          if (res !=  0) return res;
+          return obj1.getKey().compareTo(obj2.getKey());
+        }
+      });
+
+      System.out.println(list_entries);
+      for (int i = 0; i < list_entries.size(); i++) {
+        ExceptionCase.add(list_entries.get(i).getKey());
+        if (i == 4) {
+          break;
+        }
+      }
+      return (ExceptionCase);
+    }
     return sc.calculateScore();
   }
 
@@ -81,10 +117,37 @@ class ValidityCheckerProb7 {
     visitorsValidityCheck(visitors);
   }
   private void userValidityCheck(String user) {
+    if (user.length() < 1 || user.length() > 30) {
+      throw new IllegalArgumentException("User의 길이가 범위를 초과했습니다.");
+    }
   }
   private void friendsValidityCheck(List<List<String>> friends) {
+    if (friends.size() < 1 || friends.size() > 30) {
+      throw new IllegalArgumentException("friends의 길이가 범위를 초과했습니다..");
+    }
+    for (List<String> namePair : friends) {
+      if (namePair.size() != 2) {
+        throw new IllegalArgumentException("friends의 원소가 A,B 짝으로 이루어지지 않았습니다.");
+      }
+      if (namePair.get(0).length() < 1 || namePair.get(0).length() > 30) {
+        throw new IllegalArgumentException("id의 길이가 범위를 초과했습니다.");
+      }
+      if (!Pattern.matches("^[a-zA-Z]*$", namePair.get(0))
+          || !Pattern.matches("^[a-zA-Z]*$", namePair.get(1))) {
+        throw new IllegalArgumentException("id에 영어가 아닌 입력이 있습니다..");
+      }
+      if (!Pattern.matches("^[a-z]*$", namePair.get(0))
+          || !Pattern.matches("^[a-z]*$", namePair.get(1))) {
+        throw new IllegalArgumentException("id에 대문자가 있습니다..");
+      }
+    }
   }
   private void visitorsValidityCheck(List<String> visitors) {
+    for (int i = 0; i < visitors.size(); i++) {
+      if (visitors.get(i).length() < 0 || visitors.get(i).length() > 10000) {
+        throw new IllegalArgumentException("visitor의 길이가 범위를 넘었습니다.");
+      }
+    }
   }
 }
 
@@ -131,10 +194,9 @@ class ScoreCalculator {
       public int compare(Entry<String, Integer> obj1, Entry<String, Integer> obj2) {
         // 내림 차순 정렬
         int res = obj2.getValue() - obj1.getValue();
-        if (res == 0) {
-          obj1.getKey().compareTo(obj2.getKey());
-        }
-        return res;
+        if (res != 0) return res;
+        return  obj1.getKey().compareTo(obj2.getKey());
+
       }
     });
     for (int i = 0; i < list_entries.size(); i++) {
