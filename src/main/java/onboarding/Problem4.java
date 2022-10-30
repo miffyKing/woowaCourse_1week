@@ -22,10 +22,10 @@ class Word {
 class Classifier {
 
   private StringBuffer answer;
-  private final int upperSum = 'A'+'Z';
-  private final int lowerSum = 'a'+'z';
-//  private static final int upperCase; 0;
-//  private static final int lowerCase; 1;
+  private static final int upperSum = 'A'+'Z';
+  private static final int lowerSum = 'a'+'z';
+  private static final int isUpperCase = 0;
+  private static final int isLowerCase= 1;
   private String classifier;
   Classifier (String word) {
     this.classifier = word;
@@ -41,18 +41,18 @@ class Classifier {
   }
   int checkUpperLowerElse(char chunk) {
     if (chunk >= 'a' && chunk <= 'z') {
-      return 0;
+      return isLowerCase;
     }
     if (chunk >= 'A' && chunk <= 'Z') {
-      return 1;
+      return isUpperCase;
     }
     return 2;
   }
   char changeChunk(int Id, char chunk) {
-    if (Id == 0) {
+    if (Id == isLowerCase) {
       return (char)(lowerSum - chunk);
     }
-    if (Id == 1) {
+    if (Id == isUpperCase) {
       return (char)(upperSum - chunk);
     }
     return chunk;
@@ -61,7 +61,6 @@ class Classifier {
 
 public class Problem4 {
   public static String solution(String word) {
-
     Word word2 = new Word(word);
     return (word2.getAnswer());
   }
