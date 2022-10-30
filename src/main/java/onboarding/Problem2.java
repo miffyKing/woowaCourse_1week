@@ -22,14 +22,19 @@ class Crypto {
     }
   }
   private Stack<Character> stackMaker(Stack<Character> stack) {
+    char tmp = 0;
     for (int i = 0; i < cryptogram.length(); i++) {
       if (stack.empty() == true) {
+        if (tmp == cryptogram.charAt(i))
+          continue;
         stack.push(cryptogram.charAt(i));
         continue;
       }
       if (stack.peek() == cryptogram.charAt(i)) {
-        stack.pop();
+        tmp = stack.pop();
       } else if (stack.peek() != cryptogram.charAt(i)) {
+        if (tmp == cryptogram.charAt(i))
+          continue;
         stack.push(cryptogram.charAt(i));
       }
     }

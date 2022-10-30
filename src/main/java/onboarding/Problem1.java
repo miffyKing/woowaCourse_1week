@@ -13,10 +13,6 @@ class Problem1 {
     }
     User Pobi = new User(pobi);
     User Crong = new User(crong);
-    Pobi.lBookPage = pobi.get(0);
-    Pobi.rBookPage = pobi.get(1);
-    Crong.lBookPage = crong.get(0);
-    Crong.rBookPage = crong.get(1);
     answer = numCompare(Pobi.maxVal, Crong.maxVal);
     return answer;
   }
