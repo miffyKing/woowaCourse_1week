@@ -1,18 +1,22 @@
 package onboarding;
 
 class Word {
+
   private String word;
-  private static final int minLimit= 1;
-  private static final int maxLimit= 1000;
-  Word (String word) {
+  private static final int MINLIMIT = 1;
+  private static final int MAXLIMIT = 1000;
+
+  Word(String word) {
     lengthValidityCheck(word);
     this.word = word;
   }
+
   private void lengthValidityCheck(String word) {
-    if (word.length() < minLimit || word.length() > maxLimit) {
-      throw new IllegalArgumentException("암호문의 길이가 조건을 넘어섰습니다.");
+    if (word.length() < MINLIMIT || word.length() > MAXLIMIT) {
+      throw new IllegalArgumentException("length of word is not in range.");
     }
   }
+
   String getAnswer() {
     Classifier classifier = new Classifier(word);
     return classifier.getChangedString();
@@ -22,46 +26,56 @@ class Word {
 class Classifier {
 
   private StringBuffer answer;
-  private static final int upperSum = 'A'+'Z';
-  private static final int lowerSum = 'a'+'z';
-  private static final int isUpperCase = 0;
-  private static final int isLowerCase= 1;
+  private static final int UPPERSUM = 'A' + 'Z';
+  private static final int LOWERSUM = 'a' + 'z';
+  private static final int ISUPPERCASE = 0;
+  private static final int ISLOWERCASE = 1;
+  private static final int ISERROR = 2;
+  private static final char LOWERA = 'a';
+  private static final char LOWERZ = 'z';
+  private static final char UPPERA = 'A';
+  private static final char UPPERZ = 'Z';
   private String classifier;
-  Classifier (String word) {
+
+  Classifier(String word) {
     this.classifier = word;
   }
+
   String getChangedString() {
-    StringBuilder sb = new StringBuilder();
+    StringBuilder stringbuilder = new StringBuilder();
     char chunk;
     for (int i = 0; i < classifier.length(); i++) {
       int classifyId = checkUpperLowerElse(classifier.charAt(i));
-      sb.append(changeChunk(classifyId,classifier.charAt(i) ));
+      stringbuilder.append(changeChunk(classifyId, classifier.charAt(i)));
     }
-    return sb.toString();
+    return stringbuilder.toString();
   }
+
   int checkUpperLowerElse(char chunk) {
-    if (chunk >= 'a' && chunk <= 'z') {
-      return isLowerCase;
+    if (chunk >= LOWERA && chunk <= LOWERZ) {
+      return ISLOWERCASE;
     }
-    if (chunk >= 'A' && chunk <= 'Z') {
-      return isUpperCase;
+    if (chunk >= UPPERA && chunk <= UPPERZ) {
+      return ISUPPERCASE;
     }
-    return 2;
+    return ISERROR;
   }
+
   char changeChunk(int Id, char chunk) {
-    if (Id == isLowerCase) {
-      return (char)(lowerSum - chunk);
+    if (Id == ISLOWERCASE) {
+      return (char) (LOWERSUM - chunk);
     }
-    if (Id == isUpperCase) {
-      return (char)(upperSum - chunk);
+    if (Id == ISUPPERCASE) {
+      return (char) (UPPERSUM - chunk);
     }
     return chunk;
   }
 }
 
 public class Problem4 {
+
   public static String solution(String word) {
-    Word word2 = new Word(word);
-    return (word2.getAnswer());
+    Word inputWord = new Word(word);
+    return (inputWord.getAnswer());
   }
 }

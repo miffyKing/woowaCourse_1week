@@ -14,7 +14,7 @@ class Form {
 
   private List<List<String>> forms = new ArrayList<>();
   private final HashSet<String> realAnswer = new HashSet<String>();
-  private final List<HashSet<String>> parseEachName = new ArrayList<HashSet<String>>(); // 별명별 부분문자열 set을 저장하는 배열
+  private final List<HashSet<String>> parseEachName = new ArrayList<HashSet<String>>();
 
   Form(List<List<String>> form) {
     ValidityChecker vc = new ValidityChecker(form);
@@ -22,11 +22,15 @@ class Form {
   }
 
   List<String> getAnswer() {
-    makeParseEachName();        //parseEachName 완성.
+    makeParseEachName();
     findOverlap(0, parseEachName.size(), 1);
-    findOverlap(parseEachName.size() - 1, -1, -1);     //이거 음수로 넘어가도 괜찮은지 꼭 확인. -> 두글자로 안잘리는 닉네임?
-    System.out.println(realAnswer);
-    return new ArrayList<>(realAnswer);
+    findOverlap(parseEachName.size() - 1, -1, -1);
+    Iterator<String> iterator = realAnswer.iterator();
+
+    List<String> answer = new ArrayList<>(realAnswer);
+    answer.sort(Comparator.naturalOrder());
+    return answer;
+
   }
 
   void makeParseEachName() {
@@ -48,19 +52,20 @@ class Form {
 
   void findOverlap(int from, int to, int iterBy) {
     HashSet<String> parsedTotalSetDown = new HashSet<String>();
-    for (int i = from; i != to; i = i + iterBy) {        // 위에서 아래로 내려가는 과정
-      HashSet<String> hashEachName = new HashSet<String>();   // parseEachName에서 하나하나의 set
+    for (int i = from; i != to; i = i + iterBy) {
+      HashSet<String> hashEachName = new HashSet<String>();
       hashEachName = parseEachName.get(i);
       Iterator<String> it = hashEachName.iterator();
       for (String iter : hashEachName) {
-        if (parsedTotalSetDown.contains(iter)) { // 있다는 뜻은, 저 i 인덱스의 메일이 중복된 새2끼란 뜻
-          realAnswer.add(forms.get(i).get(0));            // . 두개 쓴거 없애야함.
+        if (parsedTotalSetDown.contains(iter)) {
+          realAnswer.add(forms.get(i).get(0));
         }
         parsedTotalSetDown.add(iter);
       }
     }
   }
 }
+
 class ValidityChecker {
 
   ValidityChecker(List<List<String>> input) {
@@ -70,50 +75,47 @@ class ValidityChecker {
   }
 
   private void emailValidityCheck(List<List<String>> input) {
-    //@뒷부분에 email.com 만 있는가.
-    //@앞부분이 숫자, 영어 소문자만 있는가
     for (List<String> strings : input) {
       String[] emailFront = strings.get(0).split("@");
-      if (emailFront.length != 2) {   //@가 2개이상일때
-        throw new IllegalArgumentException("이메일 양식 @@두개 를 만족하지 않습니다.");
+      if (emailFront.length != 2) {
+        throw new IllegalArgumentException("email format doesn't satisfy forms");
       }
-      if (!Pattern.matches("^[a-z0-9A-Z._-]*", emailFront[0])) {    //@앞이 영어,숫자등이 아닐때
-        throw new IllegalArgumentException("이메일 양식을 만족하지 않습니다.");
+      if (!Pattern.matches("^[a-z0-9A-Z._-]*", emailFront[0])) {
+        throw new IllegalArgumentException("email format doesn't satisfy forms");
       }
-      if (!emailFront[1].equals("email.com")) { //@뒤가 email.com이 아닐때
-        throw new IllegalArgumentException("이메일 양식을 만족하지 않습니다.");
+      if (!emailFront[1].equals("email.com")) {
+        throw new IllegalArgumentException("email format doesn't satisfy forms");
       }
     }
   }
   private void nicknameValidityCheck(List<List<String>> input) {
-    //닉네임은 한글만으로 되어있는가
     for (List<String> strings : input) {
-      String Nickname = strings.get(1);
-      if (!Pattern.matches("[가-힣]*$", Nickname)) {
-        throw new IllegalArgumentException("닉네임이 한글이 아닙니다.");
+      String nickName = strings.get(1);
+      if (!Pattern.matches("[가-힣]*$", nickName)) {
+        throw new IllegalArgumentException("Nickname is not Korean");
       }
     }
   }
+
   private void wordLengthValidityCheck(List<List<String>> input) {
-    //닉네임 길이가 1~20인가
-    //이메일 11~20 미만
-    //크루가 1~10000 이하인가?
     if (input.size() < 1 || input.size() > 10000) {
-      throw new IllegalArgumentException("인원 수가 조건 범위 내에 있지 않습니다.");
+      throw new IllegalArgumentException("List length is not in range.");
     }
     for (List<String> strings : input) {
       String Nickname = strings.get(1);
       String Email = strings.get(0);
       if (Nickname.length() < 1 || Nickname.length() >= 20) {
-        throw new IllegalArgumentException("닉네임의 길이가 조건 범위 내에 있지 않습니다.");
+        throw new IllegalArgumentException("Nickname length is not in range.");
       }
       if (Email.length() < 11 || Email.length() >= 20) {
-        throw new IllegalArgumentException("이메일의 길이가 조건 범위 내에 있지 않습니다.");
+        throw new IllegalArgumentException("email length is not in range.");
       }
     }
   }
 }
+
 public class Problem6 {
+
   public static List<String> solution(List<List<String>> forms) {
     Form form = new Form(forms);
     return form.getAnswer();

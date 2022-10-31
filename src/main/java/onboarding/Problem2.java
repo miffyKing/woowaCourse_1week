@@ -14,22 +14,25 @@ class Crypto {
   }
 
   private Stack<Character> stackMaker(Stack<Character> stack) {
-    char tmp = 0;
+    char prevPopValue = 0;
     for (int i = 0; i < cryptogram.length(); i++) {
       if (stack.empty()) {
-        if (tmp == cryptogram.charAt(i)) {
+        if (prevPopValue == cryptogram.charAt(i)) {
           continue;
         }
         stack.push(cryptogram.charAt(i));
+        prevPopValue = 0;
         continue;
       }
       if (stack.peek() == cryptogram.charAt(i)) {
-        tmp = stack.pop();
+        prevPopValue = stack.pop();
+        stack.trimToSize();
       } else if (stack.peek() != cryptogram.charAt(i)) {
-        if (tmp == cryptogram.charAt(i)) {
+        if (prevPopValue == cryptogram.charAt(i)) {
           continue;
         }
         stack.push(cryptogram.charAt(i));
+        prevPopValue = 0;
       }
     }
     return stack;
@@ -61,19 +64,19 @@ class ValidityCheckerProb2 {
 
   private void lengthValidityCheck(String cryptogram) {
     if (cryptogram.length() < MINLIMIT || cryptogram.length() > MAXLIMIT) {
-      throw new IllegalArgumentException("암호문의 길이가 범위 밖입니다.");
+      throw new IllegalArgumentException("cryptogram's length is off the limit.");
     }
   }
 
   private void allAlphaValidityCheck(String cryptogram) {
-    if (!Pattern.matches("^[0-9]*$", cryptogram)) {
-      throw new IllegalArgumentException("암호문에 영어가 아닌 문자가 있습니다.");
+    if (!Pattern.matches("^[a-zA-Z]*$", cryptogram)) {
+      throw new IllegalArgumentException("cryptogram contains more than alphabets.");
     }
   }
 
   private void lowercaseValidityCheck(String cryptogram) {
     if (!cryptogram.equals(cryptogram.toLowerCase())) {
-      throw new IllegalArgumentException("암호문에 영어 소문자가 아닌 문자가 있습니다.");
+      throw new IllegalArgumentException("cryptogram contains Upperclass alphabets.");
     }
   }
 }

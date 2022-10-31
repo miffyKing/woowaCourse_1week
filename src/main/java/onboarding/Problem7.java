@@ -50,8 +50,9 @@ class Friend {
           exceptionTable.put(visitors.get(i), score+1);
         }
       }
-      System.out.println(exceptionTable);
-      exceptionTable.remove(user);
+      if (exceptionTable.containsKey(user)) {
+        throw new IllegalArgumentException("user is in visitor list");
+      }
       List<Entry<String, Integer>> list_entries = new ArrayList<Entry<String, Integer>>(
           exceptionTable.entrySet());
       Collections.sort(list_entries, new Comparator<Entry<String, Integer>>() {
@@ -64,7 +65,6 @@ class Friend {
         }
       });
 
-      System.out.println(list_entries);
       for (int i = 0; i < list_entries.size(); i++) {
         ExceptionCase.add(list_entries.get(i).getKey());
         if (i == 4) {
